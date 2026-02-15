@@ -1,11 +1,24 @@
-.venv/
+# Python
 __pycache__/
 *.pyc
+
+# Virtual env
+.venv/
+env/
+
+# ML artifacts
 mlruns/
-data/raw/
+models/
 data/processed/
-models/*.pt
+
+# Mac files
 .DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large raw data (DO NOT PUSH)
+data/raw/
 # macOS finder icon artifacts
 Icon?
 .DS_Store
