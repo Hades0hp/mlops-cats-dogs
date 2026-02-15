@@ -6,3 +6,6 @@ data/raw/
 data/processed/
 models/*.pt
 .DS_Store
+# macOS finder icon artifacts
+Icon?
+.DS_Store
