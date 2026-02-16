@@ -1,16 +1,25 @@
-name: MLOps CI Pipeline
+name: CI - Test, Build, Push Image
 
 on:
   push:
+    branches: ["main"]
   pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  test:
+  test-build-push:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -19,12 +28,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest -q
+      - name: Run unit tests
+        run: |
+          python -m pytest -q
 
-  docker_build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build Docker image
-        run: docker build -t mlops-cats-dogs-api:ci .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/mlops-cats-dogs-api:latest
