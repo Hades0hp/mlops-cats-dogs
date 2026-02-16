@@ -91,25 +91,15 @@ jobs:
         run: |
           curl -f http://127.0.0.1:8000/health
 
+      - name: Create dummy image for prediction
+        run: |
+          # create a tiny valid JPEG using base64 (no dependencies)
+          echo '/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////2wBDAf//////////////////////////////////////////////////////////////////////////////////////wAARCAABAAEDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAQP/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdAAH/2Q==' | base64 -d > test.jpg
+
       - name: Smoke test - predict
         run: |
-          python - <<'PY'
-          from PIL import Image
-          import io, requests
-
-          # create small dummy image
-          img = Image.new("RGB", (64, 64), color=(10, 20, 30))
-          buf = io.BytesIO()
-          img.save(buf, format="JPEG")
-          buf.seek(0)
-
-          r = requests.post(
-              "http://127.0.0.1:8000/predict",
-              files={"file": ("test.jpg", buf, "image/jpeg")}
-          )
-          r.raise_for_status()
-          print("Predict response:", r.json())
-          PY
+          curl -f -X POST "http://127.0.0.1:8000/predict" \
+            -F "file=@test.jpg"
 
       - name: Cleanup port-forward
         if: always()
