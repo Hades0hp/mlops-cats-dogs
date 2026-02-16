@@ -1,4 +1,4 @@
-name: CI
+name: CI-CD
 
 on:
   push:
@@ -8,6 +8,9 @@ on:
 permissions:
   contents: read
   packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/hades0hp/mlops-cats-dogs-api
 
 jobs:
   test:
@@ -43,23 +46,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set lowercase image name
-        run: |
-          echo "IMAGE=ghcr.io/hades0hp/mlops-cats-dogs-api" >> $GITHUB_ENV
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build & Push
+      - name: Build & Push (multi-arch)
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ env.IMAGE }}:latest
-            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-  deploy_kind:
+  deploy_kind_smoke:
     needs: build_and_push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -76,9 +79,9 @@ jobs:
           kubectl apply -f k8s/service.yaml
           kubectl apply -f k8s/deployment.yaml
 
-      - name: Update deployment image to SHA tag
+      - name: Update deployment image to SHA
         run: |
-          kubectl set image deployment/cats-dogs-api api=ghcr.io/hades0hp/mlops-cats-dogs-api:${{ github.sha }} --record
+          kubectl set image deployment/cats-dogs-api api=${{ env.IMAGE_NAME }}:${{ github.sha }} --record
           kubectl rollout status deployment/cats-dogs-api --timeout=180s
 
       - name: Port-forward service
@@ -91,9 +94,8 @@ jobs:
         run: |
           curl -f http://127.0.0.1:8000/health
 
-      - name: Create dummy image for prediction
+      - name: Create dummy image (jpeg)
         run: |
-          # create a tiny valid JPEG using base64 (no dependencies)
           echo '/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////2wBDAf//////////////////////////////////////////////////////////////////////////////////////wAARCAABAAEDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAQP/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdAAH/2Q==' | base64 -d > test.jpg
 
       - name: Smoke test - predict
