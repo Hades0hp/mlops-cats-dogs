@@ -14,12 +14,6 @@ env/
 venv/
 
 # ----------------------
-# MLflow + local artifacts (DO NOT VERSION)
-# ----------------------
-mlruns/
-models/
-
-# ----------------------
 # Processed data (reproducible, not versioned)
 # ----------------------
 data/processed/
