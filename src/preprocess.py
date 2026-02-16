@@ -12,6 +12,15 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 IMG_SIZE = (224, 224)
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
+def list_images(d: Path) -> List[Path]:
+    return sorted([
+        p for p in d.iterdir()
+        if p.is_file()
+        and p.suffix.lower() in IMG_EXTS
+        and not p.name.startswith("Icon")
+        and p.name != ".DS_Store"
+    ])
+
 
 def load_image_rgb(path_or_file: Union[str, Path, BinaryIO], size: Tuple[int, int] = IMG_SIZE) -> np.ndarray:
     """Load image -> resize -> RGB -> float32 in [0,1]. Accepts a path or a file-like object."""
