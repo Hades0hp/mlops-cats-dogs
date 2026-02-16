@@ -6,7 +6,7 @@ from src.preprocess import load_image_rgb, IMG_SIZE
 
 def test_load_image_rgb_shape_and_range():
     # create a small dummy RGB image in memory
-    img = Image.new("RGB", (50, 50), (10, 20, 30))
+    img = Image.new("RGB", (50, 50), color=(10, 20, 30))
     buf = BytesIO()
     img.save(buf, format="PNG")
     buf.seek(0)
