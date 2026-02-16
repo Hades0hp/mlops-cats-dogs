@@ -4,6 +4,7 @@ from typing import List, Tuple
 
 import numpy as np
 from PIL import Image, ImageFile
+from typing import Union, BinaryIO
 
 # Helps with partially downloaded / truncated images
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -12,9 +13,9 @@ IMG_SIZE = (224, 224)
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 
-def load_image_rgb(path: str | Path, size: Tuple[int, int] = IMG_SIZE) -> np.ndarray:
-    """Load image -> resize -> RGB -> float32 in [0,1]. Returns (H,W,3)."""
-    img = Image.open(path).convert("RGB").resize(size)
+def load_image_rgb(path_or_file: Union[str, Path, BinaryIO], size: Tuple[int, int] = IMG_SIZE) -> np.ndarray:
+    """Load image -> resize -> RGB -> float32 in [0,1]. Accepts a path or a file-like object."""
+    img = Image.open(path_or_file).convert("RGB").resize(size)
     arr = np.asarray(img, dtype=np.float32) / 255.0
     return arr
 
