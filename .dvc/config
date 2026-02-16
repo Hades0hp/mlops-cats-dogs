@@ -1,4 +1,6 @@
 [core]
-    remote = localstore
+    remote = localstorage
 ['remote "localstore"']
     url = /Users/hades/dvc-storage/mlops-cats-dogs
+['remote "localstorage"']
+    url = /Users/hades/dvc-storage-cats-dogs
