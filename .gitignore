@@ -1,24 +1,50 @@
+# ----------------------
 # Python
+# ----------------------
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Virtual env
+# ----------------------
+# Virtual environments
+# ----------------------
 .venv/
 env/
+venv/
 
-# ML artifacts
+# ----------------------
+# MLflow + local artifacts (DO NOT VERSION)
+# ----------------------
 mlruns/
 models/
+
+# ----------------------
+# Processed data (reproducible, not versioned)
+# ----------------------
 data/processed/
 
-# Mac files
-.DS_Store
+# ----------------------
+# Raw data handled by DVC (never by git)
+# ----------------------
+data/raw/
 
+# ----------------------
+# macOS garbage (very important)
+# ----------------------
+.DS_Store
+**/.DS_Store
+
+Icon?
+**/Icon?
+
+# ----------------------
 # Jupyter
+# ----------------------
 .ipynb_checkpoints/
 
-# Large raw data (DO NOT PUSH)
-data/raw/
-# macOS finder icon artifacts
-Icon?
-.DS_Store
+# ----------------------
+# Logs / temp
+# ----------------------
+*.log
+*.tmp
