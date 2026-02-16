@@ -1,50 +1,117 @@
-name: CI - Test, Build, Push Image
+name: CI
 
 on:
   push:
     branches: ["main"]
   pull_request:
-    branches: ["main"]
 
 permissions:
   contents: read
   packages: write
 
 jobs:
-  test-build-push:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
+      - name: Install deps
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest
 
-      - name: Run unit tests
-        run: |
-          python -m pytest -q
+      - name: Run tests
+        run: pytest -q
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  build_and_push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Login to GHCR
+      - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Set lowercase image name
+        run: |
+          echo "IMAGE=ghcr.io/hades0hp/mlops-cats-dogs-api" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/hades0hp/mlops-cats-dogs-api:latest
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+
+  deploy_kind:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.10.0
+        with:
+          cluster_name: mlops-cats-dogs
+
+      - name: Deploy manifests
+        run: |
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/deployment.yaml
+
+      - name: Update deployment image to SHA tag
+        run: |
+          kubectl set image deployment/cats-dogs-api api=ghcr.io/hades0hp/mlops-cats-dogs-api:${{ github.sha }} --record
+          kubectl rollout status deployment/cats-dogs-api --timeout=180s
+
+      - name: Port-forward service
+        run: |
+          kubectl port-forward svc/cats-dogs-api-svc 8000:80 >/tmp/pf.log 2>&1 &
+          echo $! > /tmp/pf.pid
+          sleep 3
+
+      - name: Smoke test - health
+        run: |
+          curl -f http://127.0.0.1:8000/health
+
+      - name: Smoke test - predict
+        run: |
+          python - <<'PY'
+          from PIL import Image
+          import io, requests
+
+          # create small dummy image
+          img = Image.new("RGB", (64, 64), color=(10, 20, 30))
+          buf = io.BytesIO()
+          img.save(buf, format="JPEG")
+          buf.seek(0)
+
+          r = requests.post(
+              "http://127.0.0.1:8000/predict",
+              files={"file": ("test.jpg", buf, "image/jpeg")}
+          )
+          r.raise_for_status()
+          print("Predict response:", r.json())
+          PY
+
+      - name: Cleanup port-forward
+        if: always()
+        run: |
+          if [ -f /tmp/pf.pid ]; then kill $(cat /tmp/pf.pid) || true; fi
