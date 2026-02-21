@@ -1,5 +1,16 @@
 services:
   api:
-    build: .
+    image: ghcr.io/hades0hp/mlops-cats-dogs-api:latest
     ports:
       - "8000:8000"
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    ports:
+      - "8501:8501"
+    environment:
+      - API_BASE=http://api:8000
+    depends_on:
+      - api

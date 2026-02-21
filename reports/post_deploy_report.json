@@ -1,0 +1,217 @@
+{
+  "accuracy": 0.6,
+  "total": 20,
+  "correct": 12,
+  "confusion_matrix": [
+    [
+      6,
+      4
+    ],
+    [
+      4,
+      6
+    ]
+  ],
+  "samples": [
+    {
+      "file": "data/raw/cats/10850.jpg",
+      "true": "cat",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.5277738571166992,
+        "dog": 0.4722261428833008
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/9375.jpg",
+      "true": "cat",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.8794949054718018,
+        "dog": 0.12050508707761765
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/3230.jpg",
+      "true": "cat",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.4604431986808777,
+        "dog": 0.5395568013191223
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/10418.jpg",
+      "true": "cat",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.4561762809753418,
+        "dog": 0.5438237190246582
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/6842.jpg",
+      "true": "cat",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.4339110851287842,
+        "dog": 0.5660889148712158
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/11717.jpg",
+      "true": "cat",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.7749905586242676,
+        "dog": 0.22500941157341003
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/1508.jpg",
+      "true": "cat",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.688866138458252,
+        "dog": 0.31113383173942566
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/11723.jpg",
+      "true": "cat",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.8535149097442627,
+        "dog": 0.1464851200580597
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/5318.jpg",
+      "true": "cat",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.5905992984771729,
+        "dog": 0.40940067172050476
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/cats/9291.jpg",
+      "true": "cat",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.37171733379364014,
+        "dog": 0.6282826662063599
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/12382.jpg",
+      "true": "dog",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.77187180519104,
+        "dog": 0.22812817990779877
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/5446.jpg",
+      "true": "dog",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.3550393581390381,
+        "dog": 0.6449606418609619
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/6691.jpg",
+      "true": "dog",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.1563078761100769,
+        "dog": 0.8436921238899231
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/2732.jpg",
+      "true": "dog",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.27711158990859985,
+        "dog": 0.7228884100914001
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/12159.jpg",
+      "true": "dog",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.596964955329895,
+        "dog": 0.4030350148677826
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/3981.jpg",
+      "true": "dog",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.9021278023719788,
+        "dog": 0.09787217527627945
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/11505.jpg",
+      "true": "dog",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.10574740171432495,
+        "dog": 0.894252598285675
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/3360.jpg",
+      "true": "dog",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.4075013995170593,
+        "dog": 0.5924986004829407
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/10630.jpg",
+      "true": "dog",
+      "pred": "dog",
+      "probs": {
+        "cat": 0.22262859344482422,
+        "dog": 0.7773714065551758
+      },
+      "latency_sec": null
+    },
+    {
+      "file": "data/raw/dogs/388.jpg",
+      "true": "dog",
+      "pred": "cat",
+      "probs": {
+        "cat": 0.5136303901672363,
+        "dog": 0.48636963963508606
+      },
+      "latency_sec": null
+    }
+  ]
+}
